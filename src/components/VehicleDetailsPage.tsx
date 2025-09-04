@@ -33,81 +33,20 @@ interface Vehicle {
 }
 
 interface VehicleDetailsPageProps {
-  vehicleId: number;
+  vehicle: any;
   onBack: () => void;
-  onBooking: (vehicleId: number) => void;
-  user: any;
-  onShowLogin: () => void;
 }
 
-export default function VehicleDetailsPage({ vehicleId, onBack, onBooking, user, onShowLogin }: VehicleDetailsPageProps) {
-  const [vehicle, setVehicle] = useState<Vehicle | null>(null);
-  const [loading, setLoading] = useState(true);
+export function VehicleDetailsPage({ vehicle, onBack }: VehicleDetailsPageProps) {
   const [selectedDates, setSelectedDates] = useState({
     startDate: '',
     endDate: ''
   });
 
-  useEffect(() => {
-    // Simulate API call to fetch vehicle details
-    const fetchVehicle = async () => {
-      setLoading(true);
-      // Mock data - in real app, this would be an API call
-      const mockVehicle: Vehicle = {
-        id: vehicleId,
-        name: 'Toyota Camry 2023',
-        type: 'Sedan',
-        price: 45,
-        location: 'Downtown, City Center',
-        image: 'https://images.pexels.com/photos/116675/pexels-photo-116675.jpeg?auto=compress&cs=tinysrgb&w=800',
-        rating: 4.8,
-        reviews: 127,
-        features: ['GPS Navigation', 'Bluetooth', 'Air Conditioning', 'Backup Camera', 'USB Charging'],
-        description: 'Experience comfort and reliability with our 2023 Toyota Camry. Perfect for business trips, family outings, or daily commuting. This well-maintained vehicle offers excellent fuel efficiency and a smooth driving experience.',
-        specifications: {
-          year: 2023,
-          fuel: 'Gasoline',
-          transmission: 'Automatic',
-          seats: 5,
-          mileage: '32 MPG'
-        },
-        owner: {
-          name: 'John Smith',
-          phone: '+1 (555) 123-4567',
-          email: 'john.smith@email.com',
-          rating: 4.9,
-          verified: true
-        },
-        availability: {
-          available: true,
-          nextAvailable: '2024-01-15'
-        }
-      };
-      
-      setTimeout(() => {
-        setVehicle(mockVehicle);
-        setLoading(false);
-      }, 500);
-    };
-
-    fetchVehicle();
-  }, [vehicleId]);
-
   const handleBooking = () => {
-    if (!user) {
-      onShowLogin();
-      return;
-    }
-    onBooking(vehicleId);
+    // Handle booking logic here
+    console.log('Booking vehicle:', vehicle.id);
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
 
   if (!vehicle) {
     return (
@@ -181,77 +120,12 @@ export default function VehicleDetailsPage({ vehicleId, onBack, onBooking, user,
               <div className="mb-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">Features</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {vehicle.features.map((feature, index) => (
+                  {vehicle.features?.map((feature: string, index: number) => (
                     <div key={index} className="flex items-center space-x-2 text-sm text-gray-700">
                       <CheckCircle className="h-4 w-4 text-green-500" />
                       <span>{feature}</span>
                     </div>
                   ))}
-                </div>
-              </div>
-
-              {/* Specifications */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Specifications</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <div className="text-center p-3 bg-gray-50 rounded-lg">
-                    <Calendar className="h-6 w-6 text-gray-600 mx-auto mb-1" />
-                    <div className="text-sm font-medium text-gray-900">{vehicle.specifications.year}</div>
-                    <div className="text-xs text-gray-600">Year</div>
-                  </div>
-                  <div className="text-center p-3 bg-gray-50 rounded-lg">
-                    <Fuel className="h-6 w-6 text-gray-600 mx-auto mb-1" />
-                    <div className="text-sm font-medium text-gray-900">{vehicle.specifications.fuel}</div>
-                    <div className="text-xs text-gray-600">Fuel Type</div>
-                  </div>
-                  <div className="text-center p-3 bg-gray-50 rounded-lg">
-                    <Cog className="h-6 w-6 text-gray-600 mx-auto mb-1" />
-                    <div className="text-sm font-medium text-gray-900">{vehicle.specifications.transmission}</div>
-                    <div className="text-xs text-gray-600">Transmission</div>
-                  </div>
-                  <div className="text-center p-3 bg-gray-50 rounded-lg">
-                    <Users className="h-6 w-6 text-gray-600 mx-auto mb-1" />
-                    <div className="text-sm font-medium text-gray-900">{vehicle.specifications.seats}</div>
-                    <div className="text-xs text-gray-600">Seats</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Owner Info */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Vehicle Owner</h3>
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <User className="h-6 w-6 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2">
-                    <h4 className="font-medium text-gray-900">{vehicle.owner.name}</h4>
-                    {vehicle.owner.verified && (
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                    )}
-                  </div>
-                  <div className="flex items-center space-x-1 text-sm text-gray-600">
-                    <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                    <span>{vehicle.owner.rating} rating</span>
-                  </div>
-                </div>
-                <div className="flex flex-col space-y-2">
-                  <a
-                    href={`tel:${vehicle.owner.phone}`}
-                    className="flex items-center space-x-1 text-sm text-blue-600 hover:text-blue-700"
-                  >
-                    <Phone className="h-4 w-4" />
-                    <span>Call</span>
-                  </a>
-                  <a
-                    href={`mailto:${vehicle.owner.email}`}
-                    className="flex items-center space-x-1 text-sm text-blue-600 hover:text-blue-700"
-                  >
-                    <Mail className="h-4 w-4" />
-                    <span>Email</span>
-                  </a>
                 </div>
               </div>
             </div>
@@ -263,24 +137,6 @@ export default function VehicleDetailsPage({ vehicleId, onBack, onBooking, user,
               <div className="text-center mb-6">
                 <div className="text-3xl font-bold text-blue-600 mb-1">${vehicle.price}</div>
                 <div className="text-sm text-gray-600">per day</div>
-              </div>
-
-              {/* Availability Status */}
-              <div className="mb-6">
-                {vehicle.availability.available ? (
-                  <div className="flex items-center space-x-2 text-green-600 bg-green-50 p-3 rounded-lg">
-                    <CheckCircle className="h-5 w-5" />
-                    <span className="font-medium">Available Now</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center space-x-2 text-orange-600 bg-orange-50 p-3 rounded-lg">
-                    <Clock className="h-5 w-5" />
-                    <div>
-                      <div className="font-medium">Not Available</div>
-                      <div className="text-sm">Next available: {vehicle.availability.nextAvailable}</div>
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Date Selection */}
@@ -311,60 +167,14 @@ export default function VehicleDetailsPage({ vehicleId, onBack, onBooking, user,
                 </div>
               </div>
 
-              {/* Booking Summary */}
-              {selectedDates.startDate && selectedDates.endDate && (
-                <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                  <h4 className="font-medium text-gray-900 mb-2">Booking Summary</h4>
-                  <div className="space-y-1 text-sm">
-                    <div className="flex justify-between">
-                      <span>Daily Rate:</span>
-                      <span>${vehicle.price}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Duration:</span>
-                      <span>
-                        {Math.ceil((new Date(selectedDates.endDate).getTime() - new Date(selectedDates.startDate).getTime()) / (1000 * 60 * 60 * 24))} days
-                      </span>
-                    </div>
-                    <div className="border-t pt-1 mt-2 flex justify-between font-medium">
-                      <span>Total:</span>
-                      <span>
-                        ${vehicle.price * Math.ceil((new Date(selectedDates.endDate).getTime() - new Date(selectedDates.startDate).getTime()) / (1000 * 60 * 60 * 24))}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
               {/* Book Now Button */}
               <button
                 onClick={handleBooking}
-                disabled={!vehicle.availability.available || !selectedDates.startDate || !selectedDates.endDate}
+                disabled={!selectedDates.startDate || !selectedDates.endDate}
                 className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
               >
-                {!user ? 'Login to Book' : 'Book Now'}
+                Book Now
               </button>
-
-              {/* Contact Owner */}
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <h4 className="font-medium text-gray-900 mb-3">Contact Owner</h4>
-                <div className="space-y-2">
-                  <a
-                    href={`tel:${vehicle.owner.phone}`}
-                    className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 transition-colors"
-                  >
-                    <Phone className="h-4 w-4" />
-                    <span className="text-sm">{vehicle.owner.phone}</span>
-                  </a>
-                  <a
-                    href={`mailto:${vehicle.owner.email}`}
-                    className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 transition-colors"
-                  >
-                    <Mail className="h-4 w-4" />
-                    <span className="text-sm">{vehicle.owner.email}</span>
-                  </a>
-                </div>
-              </div>
             </div>
           </div>
         </div>
